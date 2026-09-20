@@ -1,0 +1,11 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# MVN builds
+target
+
+# Macbook
+**/.DS_Store
