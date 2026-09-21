@@ -3,8 +3,6 @@ package com.qualco.case_study.service;
 import com.qualco.case_study.dto.ExploreDto;
 import com.qualco.case_study.dto.StatMaxDto;
 import com.qualco.case_study.repository.CountryStatRepository;
-import java.util.Comparator;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,19 +19,7 @@ public class CountryStatService {
 
   @Transactional(readOnly = true)
   public List<StatMaxDto> getMaxGdpPerPopulation() {
-
-    return repository.findAllWithCountryPopulationAndGdp().stream()
-        .collect(Collectors.groupingBy(cs -> cs.getId().getCountryId()))
-        .values().stream()
-        .map(stats -> {
-          var best = stats.stream()
-              .max(Comparator.comparingDouble(cs -> cs.getGdp().doubleValue() / cs.getPopulation()))
-              .orElseThrow();
-          var c = best.getCountry();
-          return new StatMaxDto(c.getName(), c.getCountryCode3(), best.getId().getCountryId(), best.getPopulation(), best.getGdp());
-        })
-        .sorted(Comparator.comparing(StatMaxDto::getName))
-        .toList();
+    return repository.findCountriesMaxGdpPerPopulation();
   }
 
   @Transactional(readOnly = true)
